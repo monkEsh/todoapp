@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "snippets/head.html" %}
+  <body>
+    {% include "snippets/navbar.html" %}
+    <section>
+        <div class="row">
+            <div class="col-md-4">
+                <button type="button" class="btn btn-info btn-lg float-right" data-toggle="modal" data-target="#addTask">
+                    Add Task
+                </button>
+            </div>
+
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-4 border border-danger">
+                <label>Open Tasks</label>
+                <div class="list-group">
+                    {% for x in open_tasks %}
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h5 class="mb-1">{{ x.title }}</h5>
+                          <small>{{ x.created_at }}</small>
+                        </div>
+                        <p class="mb-1">{{ x.description }}</p>
+                        <small>{{ x.creator }}</small>
+                        <a href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=In-Progress" class="float-right">Move To In-progress</a>
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+
+            <div class="col-md-4 border border-primary">
+                <label>In progress Tasks</label>
+                <div class="list-group">
+                {% for x in inprogress %}
+                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h5 class="mb-1">{{ x.title }}</h5>
+                          <small>{{ x.created_at }}</small>
+                        </div>
+                        <p class="mb-1">{{ x.description }}</p>
+                        <small>{{ x.creator }}</small>
+                        <a class="float-right" href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=Done">Move To Done</a>
+                    </div>
+                {%endfor%}
+                </div>
+            </div>
+
+            <div class="col-md-4 border border-success">
+                <label>Done Tasks</label>
+                <div class="list-group">
+                {% for x in done_tasks %}
+                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h5 class="mb-1">{{ x.title }}</h5>
+                          <small>{{ x.created_at }}</small>
+                        </div>
+                        <p class="mb-1">{{ x.description }}</p>
+                        <small>{{ x.creator }}</small>
+                        <a class="float-right" href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=Open">Reopen this task</a>
+                    </div>
+                {%endfor%}
+            </div>
+            </div>
+        </div>
+    </section>
+    {% include "snippets/footer.html" %}
+  </body>
+
+<!-- Modal -->
+<div id="addTask" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title float-left">Add task</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+            <tr>
+                <td>
+                    <input type="text" name="title" class="form-control" placeholder="Task Title" required id="id_title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select class="form-control" id="id_status">
+                        <option>Open</option>
+                        <option>In-Progress</option>
+                        <option>Done</option>
+                    </select>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea name="description" class="form-control" placeholder="Task Description" id="id_description"></textarea>
+                </td>
+            </tr>
+          <button class="btn btn-primary btn-block" onclick="add_task('{{ tasklist }}')">Add Task</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- end model -->
+</html>

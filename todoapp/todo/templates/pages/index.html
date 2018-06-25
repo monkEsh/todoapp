@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "snippets/head.html" %}
+  <body id="page-top">
+    {% include "snippets/navbar.html" %}
+    <header class="bg-primary text-white">
+      <div class="container text-center">
+        <h1>Welcome to Simple <b>Note</b></h1>
+        <p class="lead">A Task Management site</p>
+
+          <div class="form-group">
+            <input id="taskSearch" type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Task name">
+            <small class="form-text .text-primary">Enter Task title.</small>
+          </div>
+          <button id="search" class="btn btn-info" onclick="search_task();">Search Task</button>
+
+      </div>
+    </header>
+
+    <section >
+      <div class="container">
+        <div class="row">
+
+          <div class="col-md-5">
+            <input type="text" name="title" class="form-control" placeholder="Task Title" required id="id_title" />
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-primary btn-block" onclick="add_task_list()">Add Task list</button>
+          </div>
+        </div>
+          <br>
+        <div class="row">
+          <table class="table table-striped">
+            <thead>
+              <tr class="text-center">
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Start Date</th>
+              </tr>
+            </thead>
+            <tbody class="text-center" id="btasks">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    {% include "snippets/footer.html" %}
+  </body>
+<script>
+    $(document).ready(function(){
+        get_tasks();
+    });
+</script>
+</html>
