@@ -105,17 +105,17 @@ def todo_tasks(request, tasklist):
     data = {"total_tasks": {},
             "done_tasks": {},
             "inprogress": {},
-            "open_tasks": {},
+            "undone_tasks": {},
             "tasklist": tasklist}
     qs = TodoList.objects.get(title=tasklist)
 
     qs = Todo.objects.filter(todolist=qs)
     data["total_tasks"] = qs.count()
-    data["open_tasks"]["count"] = qs.filter(status="Open").count()
+    data["undone_tasks"]["count"] = qs.filter(status="Undone").count()
     data["done_tasks"]["count"] = qs.filter(status="Done").count()
     data["inprogress"]["count"] = qs.filter(status="In-Progress").count()
 
-    data["open_tasks"] = qs.filter(status="Open")
+    data["undone_tasks"] = qs.filter(status="Undone")
     data["done_tasks"] = qs.filter(status="Done")
     data["inprogress"] = qs.filter(status="In-Progress")
     # return JsonResponse(data)
@@ -130,11 +130,38 @@ def update_status(request):
     qs.status = status
     if status == "Done":
         qs.close()
-    if status == "Open":
+    elif status == "Undone":
         qs.reopen()
+    elif status == "In-Progress":
+        qs.in_progress()
     qs.save()
-
     return redirect("tasks", tasklist=tasklist)
+
+
+@csrf_exempt
+def edit_task(request):
+    data = {"success": False}
+    try:
+        title = request.POST.get("title")
+        col = request.POST.get("col")
+        value = request.POST.get("value")
+        qs = Todo.objects.get(title=title)
+        res = False
+        if col == "title":
+            res = qs.update_title(title=value, user=request.user)
+        elif col == "description":
+            res = qs.update_description(description=value, user=request.user)
+        elif col == "status":
+            res = qs.update_status(status=value, user=request.user)
+        if res:
+            data["success"] = True
+            data["message"] = "%s updated successfully" % col
+        else:
+            data["message"] = "Failed to update %s" % col
+    except Exception as ex:
+        data["message"] = "Failed to update %s" % [ex]
+    finally:
+        return JsonResponse(data)
 
 
 @csrf_exempt
@@ -186,6 +213,21 @@ def add_task_list(request):
     finally:
         return JsonResponse(data)
 
+
+def edit_task_page(request):
+    data = {}
+    try:
+        tasklist = request.GET.get("tasklist")
+        task = request.GET.get("task")
+        data["tasklist"] = tasklist
+
+        task_obj = Todo.objects.get(title=task)
+        data["data"] = task_obj
+
+        return render(request, "pages/update-task.html", data)
+    except Exception as ex:
+        return HttpResponse(ex)
+
 """
 User interface with system
 """
@@ -232,20 +274,16 @@ class TodoViewSet(CreateModelMixin, ListAPIView):
 
     serializer_class = TodoSerializer
     permission_classes = [IsCreatorOrReadOnly]
-    # queryset = Todo.objects.all()
 
     def get_queryset(self):
         qs = Todo.objects.all()
         try:
-            query = self.request.GET("q")
-            if query is not None:
-                qs = qs.filter(
-                    Q(description__iscontains=query) |
-                    Q(is_finished__iscontains=query)
-                ).distinct()
-        except:
+            query = self.request.GET.get("q")
+            qs = qs.filter(
+                Q(title__icontains=query)
+            ).distinct()
+        except Exception as ex:
             pass
-
         return qs
 
     def perform_create(self, serializer):

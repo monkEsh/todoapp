@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import (authenticate, get_user_model, login, logout)
-from .models import TodoList, Todo
+from .models import TodoList, Todo, TodoAction
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -10,8 +10,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('username', 'email')
 
 
+class TodoActionsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = TodoAction
+        fields = "__all__"
+
+
 class TodoSerializer(serializers.ModelSerializer):
     creator = UserSerializer(read_only=True)
+    task = TodoActionsSerializer(read_only=True, many=True)
 
     class Meta:
         model = Todo
@@ -20,7 +28,8 @@ class TodoSerializer(serializers.ModelSerializer):
             "description",
             "created_at",
             "creator",
-            "status"
+            "status",
+            "task"
         ]
 
 

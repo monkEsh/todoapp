@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "snippets/head.html" %}
+
+  <body id="page-top">
+    {% include "snippets/navbar.html" %}
+    <section>
+
+        <div class="container">
+            <table class="table table-striped">
+                <tbody class="text-center" id="tbl">
+                    <tr>
+                        <td>
+                            Title
+                        </td>
+                        <td>
+                            <input class="form-control" id="id_title" value="{{ data.title }}">
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" onclick="update_task('title', '{{ data.title }}', '{{tasklist}}')"> Update Title </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Creator
+                        </td>
+                        <td>
+                            <input class="form-control" value="{{ data.creator }}" readonly>
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Description
+                        </td>
+                        <td>
+                            <textarea class="form-control" id="id_description">{{ data.description }}</textarea>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" onclick="update_task('description', '{{ data.title }}', '{{tasklist}}')"> Update Description </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Status
+                        </td>
+                        <td>
+                            <select class="form-control" id="id_status">
+                                {% if data.status == "Done" %}
+                                    <option selected>Done</option>
+                                    <option>Undone</option>
+                                    <option>In-Progress</option>
+                                {% elif data.status == "Undone" %}
+                                    <option selected>Undone</option>
+                                    <option>Done</option>
+                                    <option>In-Progress</option>
+                                {% elif data.status == "In-Progress" %}
+                                    <option selected>In-Progress</option>
+                                    <option>Done</option>
+                                    <option>Undone</option>
+                                {% endif %}
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" onclick="update_task('status', '{{ data.title }}', '{{tasklist}}')"> Update Status </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Created At
+                        </td>
+                        <td>
+                            <input class="form-control" value="{{ data.created_at }}" readonly>
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td>Action</td>
+                        <td>User</td>
+                        <td>Time</td>
+                    </tr>
+                </thead>
+                <tbody id="task_table">
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% include "snippets/footer.html" %}
+
+  </body>
+<script>
+    get_task_updates("{{data.title}}");
+</script>
+</html>

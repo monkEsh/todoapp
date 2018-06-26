@@ -18,4 +18,6 @@ urlpatterns = [
     url(r'^change-status/', views.update_status, name="update-task"),
     url(r'^add-task/', views.add_task, name="add-task"),
     url(r'add_task_list/', views.add_task_list, name="add_task_list"),
+    url(r'edit-task/', views.edit_task_page, name="edit_task"),
+    url(r'edit-task-data/', views.edit_task, name="edit")
 ]

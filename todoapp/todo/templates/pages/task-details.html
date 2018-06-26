@@ -15,17 +15,20 @@
         <br>
         <div class="row">
             <div class="col-md-4 border border-danger">
-                <label>Open Tasks</label>
+                <label>Undone Tasks</label>
                 <div class="list-group">
-                    {% for x in open_tasks %}
+                    {% for x in undone_tasks %}
                     <div class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                           <h5 class="mb-1">{{ x.title }}</h5>
                           <small>{{ x.created_at }}</small>
                         </div>
                         <p class="mb-1">{{ x.description }}</p>
-                        <small>{{ x.creator }}</small>
-                        <a href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=In-Progress" class="float-right">Move To In-progress</a>
+                        <p class="mb-1"> <small>{{ x.creator }}</small> </p>
+
+                        <a href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=In-Progress" class="btn btn-primary float-right">Move To In-progress</a>
+
+                        <a style="margin-right: 10px;"  class="btn btn-primary float-right" href="/portal/edit-task/?tasklist={{ tasklist }}&task={{ x.title }}&status=Undone">Task Details</a>
                     </div>
                     {%endfor%}
                 </div>
@@ -42,7 +45,9 @@
                         </div>
                         <p class="mb-1">{{ x.description }}</p>
                         <small>{{ x.creator }}</small>
-                        <a class="float-right" href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=Done">Move To Done</a>
+                        <a class="btn btn-primary float-right" href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=Done">Move To Done</a>
+
+                        <a style="margin-right: 10px;" class="btn btn-primary float-right" style="margin-right: 10px;" href="/portal/edit-task/?tasklist={{ tasklist }}&task={{ x.title }}&status=Undone">Task Details</a>
                     </div>
                 {%endfor%}
                 </div>
@@ -58,8 +63,10 @@
                           <small>{{ x.created_at }}</small>
                         </div>
                         <p class="mb-1">{{ x.description }}</p>
-                        <small>{{ x.creator }}</small>
-                        <a class="float-right" href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=Open">Reopen this task</a>
+                        <p class="mb-1"> <small>{{ x.creator }}</small> </p>
+
+                        <a class="btn btn-primary float-right" href="/portal/change-status/?tasklist={{ tasklist }}&pk={{ x.pk }}&status=Undone">Reopen this task</a>
+                        <a style="margin-right: 10px;" class="btn btn-primary float-right" href="/portal/edit-task/?tasklist={{ tasklist }}&task={{ x.title }}&status=Undone">Task Details</a>
                     </div>
                 {%endfor%}
             </div>
@@ -88,7 +95,7 @@
             <tr>
                 <td>
                     <select class="form-control" id="id_status">
-                        <option>Open</option>
+                        <option>Undone</option>
                         <option>In-Progress</option>
                         <option>Done</option>
                     </select>
@@ -110,4 +117,8 @@
   </div>
 </div>
 <!-- end model -->
+
+<script>
+    console.log("{{ undone_tasks }}");
+</script>
 </html>

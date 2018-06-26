@@ -89,3 +89,68 @@ function add_task_list() {
         }
     });
 }
+
+function get_task_updates(task) {
+    $.ajax({
+        url: "/portal/todo-list/?q=" + task,
+        type: "GET",
+        success: function (res) {
+            console.log(res);
+            update_task_table(res[0].task);
+        }
+    });
+}
+
+function update_task_table(res) {
+    var task_table = $("#task_table");
+    var len_task = res.length;
+    var tbody = "";
+    for(var x=0; x<len_task; x++){
+        var action = res[x]["action_taken"];
+        var user = res[x]["user"]["username"];
+        var time = res[x]["time"];
+
+        var row = "<tr>\n" +
+            "<td>" + action + "</td>" +
+            "<td>" + user + "</td>" +
+            "<td>" + time + "</td>" +
+            "</tr>";
+        tbody = tbody + row;
+    }
+    task_table.html(tbody);
+}
+
+
+function update_task(col, title, tasklist) {
+    var obj = new Object();
+    obj.title = title;
+    obj.col = col;
+
+    if(col === 'title'){
+        value = $("#id_title").val();
+        title = value;
+    }
+    else if(col === 'description'){
+        value = $("#id_description").val();
+    }
+    else if(col === 'status'){
+        value =  $("#id_status").val();
+        console.log(value);
+    }
+    obj.value = value;
+    $.ajax({
+        url: "/portal/edit-task-data/",
+        type: "POST",
+        data: obj,
+        dataType: 'json',
+        success: function (res) {
+            if(res.success === true){
+                alert(res.message);
+                window.location.href = "/portal/edit-task/?tasklist=" + tasklist + "&task=" + title;
+            }
+            else {
+                alert(res.message);
+            }
+        }
+    });
+}
