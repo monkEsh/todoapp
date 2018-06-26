@@ -32,7 +32,17 @@ UserModel = get_user_model()
 """
 User auth and session
 """
+
+
 def login_view(request):
+    """
+    1. take UserLoginForm and provide request.POST data else None
+    2. Check generated form is valid if not redirect to the login page
+    3. If form is valid, get data form from and authenticate user
+    4. User id valid then start session and redirect to index page
+    :param request:
+    :return:
+    """
     data = {"title": "Login"}
     form = UserLoginForm(request.POST or None)
 
@@ -56,11 +66,24 @@ def login_view(request):
 
 
 def logout_view(request):
+    """
+    1. Remove session data and redirect to login page
+    :param request:
+    :return:
+    """
     logout(request)
-    return redirect('index')
+    return redirect('login')
 
 
 def register_view(request):
+    """
+    1. Create form with request data or none
+    2. Check form validation
+    3. Save data in db with encrypted password
+    4. redirect to login page
+    :param request:
+    :return:
+    """
     data = {"title": "Sign Up"}
     form = UserRegistraionForm(request.POST or None)
     if form.is_valid():
@@ -68,7 +91,7 @@ def register_view(request):
         password = form.cleaned_data.get("password")
         new_user.set_password(password)
         new_user.save()
-        return redirect('index')
+        return redirect('login')
 
     data["form"] = form
     return render(request, "pages/form.html", data)
@@ -84,6 +107,12 @@ User interface with system
 
 
 def index(request):
+    """
+    1. Check user authentication
+    2. Redirect to index page
+    :param request:
+    :return:
+    """
     try:
         if request.user.is_authenticated:
             return render(request, "pages/index.html")
@@ -95,6 +124,13 @@ def index(request):
 
 
 def todo_tasks(request, tasklist):
+    """
+    1. Get data and store into data by given tasklist
+    2. Redirect to task-details
+    :param request:
+    :param tasklist:
+    :return:
+    """
     data = {"total_tasks": {},
             "done_tasks": {},
             "inprogress": {},
@@ -116,6 +152,13 @@ def todo_tasks(request, tasklist):
 
 
 def update_status(request):
+    """
+    1. get data from request
+    2. check status and perform actions
+    3. save data and redirect to same page
+    :param request:
+    :return:
+    """
     tasklist = request.GET.get("tasklist")
     pk = request.GET.get("pk")
     status = request.GET.get("status")
@@ -133,6 +176,14 @@ def update_status(request):
 
 @csrf_exempt
 def edit_task(request):
+    """
+    1. Get data from POST
+    2. Create object of Todo table
+    3. Call funtions in Todo model based on col
+    4. Save data and retun success info
+    :param request:
+    :return:
+    """
     data = {"success": False}
     try:
         title = request.POST.get("title")
@@ -159,6 +210,13 @@ def edit_task(request):
 
 @csrf_exempt
 def add_task(request):
+    """
+    1. Get data from request
+    2. Check todo with same name exist if yes then raise exception
+    3. Save data and return success message
+    :param request:
+    :return:
+    """
     data = {"success": False}
     try:
         title = request.POST.get("title")
@@ -188,6 +246,13 @@ def add_task(request):
 
 @csrf_exempt
 def add_task_list(request):
+    """
+    1. Get data from request
+    2. Check Todolist with same title exist, if exist raise exception
+    3. Save data return message
+    :param request:
+    :return:
+    """
     data = {"success": False}
     try:
         title = request.POST.get("title")
@@ -208,6 +273,12 @@ def add_task_list(request):
 
 
 def edit_task_page(request):
+    """
+    1. Get tasklist and task from url
+    2. get task data and render update task page
+    :param request:
+    :return:
+    """
     data = {}
     try:
         tasklist = request.GET.get("tasklist")
@@ -232,7 +303,7 @@ Restful API
 
 class TodoListView(CreateModelMixin, ListAPIView):
     """
-    API endpoint to CRUD on todolist
+    API endpoint to Create and list on todolist
     """
     lookup_field = "title"
     serializer_class = TodoListSerializer
@@ -261,9 +332,9 @@ class TodoListView(CreateModelMixin, ListAPIView):
 
 class TodoViewSet(CreateModelMixin, ListAPIView):
     """
-    API endpoint to CRUD new subtask
+    API endpoint to Create and list TodoView
     """
-    lookup_field = "description"
+    lookup_field = "title"
 
     serializer_class = TodoSerializer
     permission_classes = [IsCreatorOrReadOnly]
