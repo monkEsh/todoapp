@@ -1,7 +1,3 @@
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from rest_framework import viewsets
-from django.core import serializers
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
@@ -11,7 +7,6 @@ from django.contrib.auth import (
     login,
     logout)
 from rest_framework.generics import (
-    RetrieveUpdateDestroyAPIView,
     ListAPIView
 )
 from rest_framework.mixins import (
@@ -20,7 +15,6 @@ from rest_framework.mixins import (
 from rest_framework.response import Response
 from .models import TodoList, Todo
 from .serializers import (
-    UserSerializer,
     TodoListSerializer,
     TodoSerializer
 )
@@ -30,8 +24,7 @@ from .forms import (
 )
 from django.shortcuts import render, redirect
 from .permissions import IsCreatorOrReadOnly
-import json
-# Create your views here.
+
 
 UserModel = get_user_model()
 

@@ -1,11 +1,5 @@
 from django.conf.urls import url, include
-from rest_framework import routers
 from . import views
-
-#router = routers.DefaultRouter()
-#router.register(r'user', views.UserViewSet)
-#router.register(r'todolist', views.TodoListViewSet)
-#router.register(r'todo', views.TodoViewSet)
 
 urlpatterns = [
     url(r'^login/', views.login_view, name="login"),
