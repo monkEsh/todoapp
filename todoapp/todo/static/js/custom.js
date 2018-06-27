@@ -47,47 +47,61 @@ function update_tasks(res) {
 
 function add_task(task) {
     var object = new Object();
-    object.title = $("#id_title").val();
-    object.status = $("#id_status").val();
-    object.desc = $("#id_description").val();
+    title = $("#id_title").val();
+    status = $("#id_status").val();
+    desc = $("#id_description").val();
     object.tasklist = task;
 
-    $.ajax({
-    url: "/portal/add-task/",
-    type: 'POST',
-    dataType: 'json',
-        data: object,
-    success: function(res) {
-            if(res.success === true){
-                alert(res.message);
-                window.location.href = "/portal/todo-tasks/" + task;
+    if(title != "" && status != "" && desc != ""){
+        object.title = title;
+        object.status = status;
+        object.desc = desc;
+        $.ajax({
+        url: "/portal/add-task/",
+        type: 'POST',
+        dataType: 'json',
+            data: object,
+        success: function(res) {
+                if(res.success === true){
+                    alert(res.message);
+                    window.location.href = "/portal/todo-tasks/" + task;
+                }
+                else {
+                    alert(res.message);
+                }
             }
-            else {
-                alert(res.message);
-            }
-        }
-    });
-
+        });
+    }
+    else {
+        alert("All Fields are required")
+    }
 }
 
 function add_task_list() {
     var object = new Object();
-    object.title = $("#id_title").val();
-    $.ajax({
-    url: "/portal/add_task_list/",
-    type: 'POST',
-    dataType: 'json',
-        data: object,
-    success: function(res) {
-            if(res.success === true){
-                alert(res.message);
-                window.location.href = "/portal/index/";
+    title = $("#id_title").val();
+
+    if(title!=""){
+        object.title = title;
+        $.ajax({
+        url: "/portal/add_task_list/",
+        type: 'POST',
+        dataType: 'json',
+            data: object,
+        success: function(res) {
+                if(res.success === true){
+                    alert(res.message);
+                    window.location.href = "/portal/index/";
+                }
+                else {
+                    alert(res.message);
+                }
             }
-            else {
-                alert(res.message);
-            }
-        }
-    });
+        });
+    }
+    else{
+        alert("Please provide title ")
+    }
 }
 
 function get_task_updates(task) {

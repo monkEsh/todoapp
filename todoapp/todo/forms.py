@@ -7,7 +7,7 @@ UserModel = get_user_model()
 
 
 class UserLoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control", "placeholder": "Email address"}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control", "placeholder": "Email Username"}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control", "placeholder": "Password"}))
 
     def clean(self, *args, **kwargs):
